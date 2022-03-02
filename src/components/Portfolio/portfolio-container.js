@@ -1,56 +1,146 @@
+// import React, { Component } from "react";
+// import axios from "axios";
+
+// import PortfolioItem from "./portfolio-item";
+
+// export default class PortfolioContainer extends Component {
+//     constructor() {
+//         super();
+
+//         this.state = {
+//             pageTitle: "Welcome to my portfolio",
+//             isLoading: false,
+//             data: [
+//                 { title: "Quip", category: "eCommerce", slug: "quip" }, 
+//                 { title: "Eventbrite", category: "Scheduling", slug: "eventbrite" }, 
+//                 { title: "Ministry Safe", category: "Enterprise", slug: "ministry-safe" },
+//                 { title: "SwingAway", category: "eCommerce", slug: "swingaway" }
+//             ]
+//         };
+
+//         this.handleFilter = this.handleFilter.bind(this);
+//     this.getPortfolioItems = this.getPortfolioItems.bind(this);
+
+//     }
+
+//     handleFilter(filter) {
+//         this.setState({
+//             data: this.state.data.filter(item => {
+//                 return item.category === filter;
+//             })
+//         });
+//     }
+
+//     getPortfolioItems() {
+//       axios
+//         .get("https://marioe.devcamp.space/portfolio/portfolio_items")
+//         .then(response => {
+//           console.log("response data", response);
+//         })
+//         .catch(error => {
+//           console.log(error);
+//         });
+//     }
+
+//     portfolioItems(){
+//         return this.state.data.map(item => {
+//             return <PortfolioItem title={item.title} url={"google.com"} slug={ item.slug }/>;
+//         });
+//     }
+
+//     render(){
+//         if (this.state.isLoading) {
+//           return <div>Loading...</div>;
+//         }
+
+//         this.getPortfolioItems();
+
+//         return (
+//            <div>
+//            <h2>{this.state.pageTitle}</h2>
+
+//            <button onClick={() => this.handleFilter('eCommerce')}>'eCommerce'</button>
+//            <button onClick={() => this.handleFilter('Scheduling')}>'Scheduling'</button>
+//            <button onClick={() => this.handleFilter('Enterprise')}>'Enterprise'</button>
+
+//            {this.portfolioItems()}
+
+
+//            </div>
+//         );
+//     }
+// }
+
 import React, { Component } from "react";
+import axios from "axios";
 
 import PortfolioItem from "./portfolio-item";
 
 export default class PortfolioContainer extends Component {
-    constructor() {
-        super();
+  constructor() {
+    super();
 
-        this.state = {
-            pageTitle: "Welcome to my portfolio",
-            isLoading: false,
-            data: [
-                { title: "Quip", category: "eCommerce" }, 
-                { title: "Eventbrite", category: "Scheduling" }, 
-                { title: "Ministry Safe", category: "Enterprise" },
-                { title: "SwingAway", category: "eCommerce" }
-            ]
-        };
+    this.state = {
+      pageTitle: "Welcome to my portfolio",
+      isLoading: false,
+      data: []
+    };
 
-        this.handleFilter = this.handleFilter.bind(this);
-    }
+    this.handleFilter = this.handleFilter.bind(this);
+  }
 
-    handleFilter(filter) {
+  handleFilter(filter) {
+    this.setState({
+      data: this.state.data.filter(item => {
+        return item.category === filter;
+      })
+    });
+  }
+
+  getPortfolioItems() {
+    axios
+      .get("https://marioe.devcamp.space/portfolio/portfolio_items")
+      .then(response => {
         this.setState({
-            data: this.state.data.filter(item => {
-                return item.category === filter;
-            })
+          data: response.data.portfolio_items
         });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  portfolioItems() {
+    return this.state.data.map(item => {
+      return <PortfolioItem title={item.name} url={item.url} slug={item.id} />;
+    });
+  }
+
+  componentDidMount() {
+    this.getPortfolioItems();
+  }
+
+  render() {
+    if (this.state.isLoading) {
+      return <div>Loading...</div>;
     }
 
-    portfolioItems(){
-        return this.state.data.map(item => {
-            return <PortfolioItem title={item.title} url={"google.com"} />;
-        });
-    }
+    return (
+      <div>
+        <h2>{this.state.pageTitle}</h2>
 
-    render(){
-        if (this.state.isLoading) {
-            return <div>Loading...</div>;
-        }
+        <button onClick={() => this.handleFilter("eCommerce")}>
+          eCommerce
+        </button>
+        <button onClick={() => this.handleFilter("Scheduling")}>
+          Scheduling
+        </button>
+        <button onClick={() => this.handleFilter("Enterprise")}>
+          Enterprise
+        </button>
 
-        return (
-           <div>
-           <h2>{this.state.pageTitle}</h2>
-
-           <button onClick={() => this.handleFilter('eCommerce')}>'eCommerce'</button>
-           <button onClick={() => this.handleFilter('Scheduling')}>'Scheduling'</button>
-           <button onClick={() => this.handleFilter('Enterprise')}>'Enterprise'</button>
-
-           {this.portfolioItems()}
-
-
-           </div>
-        );
-    }
+        {this.portfolioItems()}
+      </div>
+    );
+  }
 }
