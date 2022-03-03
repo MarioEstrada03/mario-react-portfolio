@@ -4,3 +4,8 @@ body {
     margin: 0px;
     font-family: 'Fredoka', sans-serif;
 }
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
