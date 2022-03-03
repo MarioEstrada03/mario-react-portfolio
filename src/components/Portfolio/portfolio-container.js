@@ -81,7 +81,7 @@ export default class PortfolioContainer extends Component {
     super();
 
     this.state = {
-      pageTitle: "Welcome to my portfolio",
+      pageTitle: "Welcome to My Portfolio",
       isLoading: false,
       data: []
     };
@@ -112,7 +112,13 @@ export default class PortfolioContainer extends Component {
 
   portfolioItems() {
     return this.state.data.map(item => {
-      return <PortfolioItem title={item.name} url={item.url} slug={item.id} />;
+      return (
+        <PortfolioItem
+           key={item.id} 
+           item={item} 
+
+        />
+      );
     });
   }
 
